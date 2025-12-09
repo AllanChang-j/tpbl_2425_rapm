@@ -39,7 +39,7 @@ Stint 是 APM 的基本觀察單位，每一筆資料包含：
 
 ⸻
 
-#3. 建立 RAPM 模型（rapm.py）
+3. 建立 RAPM 模型（rapm.py）
 
 RAPM 使用 ridge regression（L2 regularization）來解決 APM 中的多重共線性問題。
 
