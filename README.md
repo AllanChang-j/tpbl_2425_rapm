@@ -4,8 +4,8 @@
 
 專案流程包含三部分程式碼與兩份資料集：
 	1.	tpbl_pbp2stints.py — TPBL 逐球資料轉換為 Stints
-	2.	rapm.py — 使用 Ridge Regression 計算球員 RAPM
-	3.	stints_TPBL_2024_9-134.csv — 處理後的 stints 資料
+	2.	stints_TPBL_2024_9-134.csv — 處理後的整季 stints 資料
+	3.	rapm.py — 使用 Ridge Regression與回歸分析 計算球員 RAPM
 	4.	rapm_TPBL_24-25.csv — 計算出的 RAPM 結果
 
 ⸻
@@ -14,13 +14,10 @@
 
 本專案的分析步驟如下：
 
-1. 取得 TPBL 官方逐球資料（Play-by-Play Data）
+1. 取得 TPBL 官方逐球資料 PBP 並轉換為 Stints（tpbl_pbp2stints.py）
 
 資料來源為 TPBL 官方網站。
 逐球事件包含：進球、犯規、換人、暫停等。
-
-2. 將 PBP 轉換為 Stints（tpbl_pbp2stints.py）
-
 為進行 RAPM 模型，需要將比賽切割為「所有球員組合保持不變的時間段」（stint）。
 
 Stint 是 APM 的基本觀察單位，每一筆資料包含：
@@ -31,6 +28,7 @@ Stint 是 APM 的基本觀察單位，每一筆資料包含：
 
 程式功能包含：
 	•	解析逐球資料
+	•   切割逐球資料成回合
 	•	追蹤場上球員名單的變化
 	•	每次有人進出場就切割新的 stint
 	•	計算進攻方與防守方的淨分差
@@ -50,7 +48,7 @@ Y = X\beta + \epsilon
 其中：
 	•	Y = stint 的淨分差
 	•	X = 球員出場矩陣（上場為 +1、對手為 −1）
-	•	β = 球員的影響值（APM / RAPM）
+	•	β = 球員的影響值（RAPM）
 
 程式功能包含：
 
@@ -61,20 +59,18 @@ Y = X\beta + \epsilon
 	•	未上場 = 0
 
   執行 Ridge Regression
-	•	α 值可自行調整（避免模型不穩定）
-	•	計算攻守合併 RAPM
-（若需要可擴充為 O-RAPM / D-RAPM）
+	•	λ值可自行調整（避免模型不穩定）
+	•	計算RAPM / O-RAPM / D-RAPM
 
   數據清理與維度檢查
 	•	確認所有球員都在矩陣中
 	•	處理稀疏矩陣
 
   輸出結果 CSV
-	•	Player
 	•	RAPM（影響每 100 poss 的貢獻）
-	•	標準化分數等
+	•	CV結果
 
-輸出檔案：rapm_TPBL_24-25.csv
+輸出檔案：rapm_TPBL_24-25.csv, rapm_TPBL_24-25_cv_reault.csv
 
 ⸻
 
